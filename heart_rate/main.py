@@ -4,7 +4,6 @@ import logging
 import sys
 
 import video_utils
-
 from heart_rate import __version__
 
 _logger = logging.getLogger(__name__)
@@ -75,7 +74,12 @@ def main(args):
     setup_logging(args.log_level)
     _logger.info("Starting application...")
 
-    video = video_utils.Video(args.video_path)
+    try:
+        video = video_utils.Video(args.video_path)
+    except Exception as e:
+        _logger.error("Could not create video instance. Error message is: \"{}\"".format(e.message))
+        exit(1)
+
 
 def run():
     """Entry point for console_scripts
