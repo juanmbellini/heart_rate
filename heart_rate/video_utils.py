@@ -37,6 +37,9 @@ class Video:
             raise IOError("{} is not a file".format(path_to_video))
 
         video_capture = cv2.VideoCapture(path_to_video)
+        if not video_capture.isOpened():
+            _logger.debug("Could not open video")
+            raise IOError("Could not open {} file".format(path_to_video))
 
         self._length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
         self._width = int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH))
