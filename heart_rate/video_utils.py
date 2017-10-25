@@ -61,6 +61,11 @@ class Video:
                 break
         _logger.debug("Video frames read successfully")
 
+        _logger.debug("Closing CV2...")
+        video_capture.release()
+        cv2.destroyAllWindows()
+        _logger.debug("CV2 closes successfully...")
+
         _logger.info("Video instance created successfully")
 
     @property
