@@ -3,6 +3,7 @@ import argparse
 import logging
 import sys
 
+import video_utils
 from heart_rate import __version__
 
 _logger = logging.getLogger(__name__)
@@ -39,6 +40,15 @@ def parse_args(args):
         action='store_const',
         const=logging.DEBUG)
 
+    parser.add_argument(
+        '-vp',
+        '--video-path',
+        dest="video_path",
+        help="Set that path to the video to analyze.",
+        action='store',
+        default="./video",
+        type=str)
+
     return parser.parse_args(args)
 
 
@@ -63,6 +73,12 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.log_level)
     _logger.info("Starting application...")
+
+    try:
+        video = video_utils.Video(args.video_path)
+    except Exception as e:
+        _logger.error("Could not create video instance. Error message is: \"{}\"".format(e.message))
+        exit(1)
 
 
 def run():
