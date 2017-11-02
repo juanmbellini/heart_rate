@@ -7,6 +7,7 @@ from inspect import getargspec
 
 import numpy as np
 
+import fft
 import video_utils
 
 _logger = logging.getLogger(__name__)
@@ -145,7 +146,7 @@ def _process_signal(signal):
         _logger.error("Could not process signal. Must not be null, and must be instance of numpy's array")
         raise ValueError("The signal must not be null and must be a numpy array")
 
-    return np.abs(np.fft.fftshift(np.fft.fft(signal))) ** 2  # Calculate spectral density
+    return np.abs(fft.fftshift(fft.fft(signal))) ** 2  # Calculate spectral density
 
 
 def _filter_signal(signal, filters=None):
