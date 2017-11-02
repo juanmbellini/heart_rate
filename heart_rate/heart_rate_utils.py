@@ -48,6 +48,7 @@ def measure(video, roi, min_freq, max_freq, channel='G'):
         raise ValueError("The channel must not be null and must be a string")
 
     # Prepare stuff...
+    _logger.info("Preparing stuff to measure heart beat rate from video...")
     length = 2 ** int(np.log2(video.length))  # Get the previous power of 2 from the given video
     half_length = length / 2
     frequencies = np.linspace(-half_length, half_length - 1, length) * video.fps / length
@@ -59,6 +60,7 @@ def measure(video, roi, min_freq, max_freq, channel='G'):
     # noinspection PyTypeChecker
     filtered_signal = _filter_signal(processed_signal, [_create_bandpass_filter(frequencies, min_freq, max_freq)])
 
+    _logger.info("Calculating average heart beat rate...")
     # noinspection PyTypeChecker
     return abs(frequencies[np.argmax(filtered_signal)]) * _HERTZ_PER_MINUTE
 
@@ -74,10 +76,13 @@ def _get_channel_signal(video, channel):
         ndarray: The signal extracted from the channel video.
     """
     if channel == 'R':
+        _logger.info("Getting frames from the R channel...")
         return video.r
     if channel == 'G':
+        _logger.info("Getting frames from the G channel...")
         return video.g
     if channel == 'B':
+        _logger.info("Getting frames from the B channel...")
         return video.b
 
     _logger.debug("A wrong channel was passed. Must be 'R', 'G' or 'B', but was {}".format(channel))
@@ -110,10 +115,14 @@ def _create_signal(frames, roi, video_height, video_width):
         _logger.debug("The ROI is out of range")
         raise ValueError("Wrong ROI. Is out of range")
 
+    _logger.info("Getting ROI from frames...")
     roi_frames = map(lambda frame: _get_roi(frame, roi), frames)
+    _logger.info("Mapping ROI frames to mean value...")
     raw_signal = map(lambda roi_frame: np.mean(roi_frame), roi_frames)  # Calculate the mean of the ROI
+    _logger.info("Calculating mean of the raw signal...")
     raw_signal_mean = np.mean(raw_signal)  # Calculate the mean of the signal to be substracted to it
 
+    _logger.info("Creating signal to process...")
     return np.array(map(lambda point: point - raw_signal_mean, raw_signal))  # Creates the final signal to be processed
 
 
@@ -146,6 +155,7 @@ def _process_signal(signal):
         _logger.error("Could not process signal. Must not be null, and must be instance of numpy's array")
         raise ValueError("The signal must not be null and must be a numpy array")
 
+    _logger.info("Processing signal...")
     return np.abs(fft.fftshift(fft.fft(signal))) ** 2  # Calculate spectral density
 
 
@@ -169,6 +179,7 @@ def _filter_signal(signal, filters=None):
         _logger.debug("A filter which does not receive only one argument was tried to be used.")
         raise ValueError("All filters should receive one argument (the signal to be filtered)")
 
+    _logger.info("Filtering processed signal...")
     # Apply all filters
     for f in filters:
         new_signal = f(signal)
