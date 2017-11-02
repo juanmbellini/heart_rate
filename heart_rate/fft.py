@@ -3,7 +3,7 @@ import numpy as np
 
 def fft(x):
 
-    "As we know its going to have a complex part, we need to specifically set the type to admit complex"
+    """As we know its going to have a complex part, we need to specifically set the type to admit complex"""
     x = np.asarray(x, dtype=np.complex)
 
     N = len(x)
@@ -24,3 +24,10 @@ def fft(x):
         x_k[k] = kValue + np.exp(-2j * np.pi * k / N) * x_k[k + N // 2]
         x_k[k + N // 2] = kValue - np.exp(-2j * np.pi * k / N) * x_k[k + N // 2]
     return x_k
+
+
+def fftshift(x):
+
+    """Rearranges a Fourier transform X by shifting the zero-frequency component to the center of the array."""
+
+    return np.roll(x,len(x)/2)
