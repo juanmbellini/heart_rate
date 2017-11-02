@@ -14,11 +14,15 @@ _logger = logging.getLogger(__name__)
 _HERTZ_PER_MINUTE = 60
 
 
-def measure(video, roi_upper_left_vertex, roi_height, roi_width, min_freq, max_freq, channel='G'):
+def measure(video, roi, min_freq, max_freq, channel='G'):
     """ Measures the heart beat rate in the given video, customizing the process according to the given params.
 
     Params:
         video (Video): The video to analyze.
+        roi (tuple): A 4-dimensional tuple holding each of the vertexes of a rectangular ROI.
+                     Note: The first two elements define the height, and the second two, the width.
+                     This means that roi[0] is the upper left corner, roi[1] is the lower left corner,
+                     roi[2] is the upper right corner, and roi[3] is the lower right corner.
         upper_left_vertex (tuple): A tuple of two elements (in which both are integers),
                                     representing a point in the frame to be considered as the upper left vertex of the
                                     rectangular ROI.
@@ -49,7 +53,7 @@ def measure(video, roi_upper_left_vertex, roi_height, roi_width, min_freq, max_f
 
     # Signal processing...
     frames = _get_channel_signal(video, channel)[:length]  # Get just the first elements
-    signal = _create_signal(frames, roi_upper_left_vertex, roi_height, roi_width, video.height, video.width)
+    signal = _create_signal(frames, roi, video.height, video.width)  # Will validate the ROI
     processed_signal = _process_signal(signal)
     # noinspection PyTypeChecker
     filtered_signal = _filter_signal(processed_signal, [_create_bandpass_filter(frequencies, min_freq, max_freq)])
@@ -79,17 +83,15 @@ def _get_channel_signal(video, channel):
     raise ValueError("The channel was wrong. Must be 'R', 'G' or 'B")
 
 
-def _create_signal(frames, roi_upper_left_vertex, roi_height, roi_width, video_height, video_width):
+def _create_signal(frames, roi, video_height, video_width):
     """ Creates the signal to be processed from the given list of frames.
 
     Params:
         frames (list): The list of frames from where the signal will be created. We assume all frames has same shape.
-        upper_left_vertex (tuple): A tuple of two elements (in which both are integers),
-                                    representing a point in the frame to be considered as the upper left vertex of the
-                                    rectangular ROI.
-                                    Note: The orientation is (row, column).
-        roi_height (int): The height of the ROI
-        roi_width (int): The width of the ROI.
+        roi (tuple): A 4-dimensional tuple holding each of the vertexes of a rectangular ROI.
+                     Note: The first two elements define the height, and the second two, the width.
+                     This means that roi[0] is the upper left corner, roi[1] is the lower left corner,
+                     roi[2] is the upper right corner, and roi[3] is the lower right corner.
         video_height (int): The video height
         video_width (int): The video width
     Returns:
@@ -99,50 +101,36 @@ def _create_signal(frames, roi_upper_left_vertex, roi_height, roi_width, video_h
     if frames is None or not isinstance(frames, list) or not frames:
         _logger.debug("The frames was null, was not a list or was an empty list")
         raise ValueError("The frames must be a non empty list")
-    if roi_upper_left_vertex is None or not isinstance(roi_upper_left_vertex, tuple) \
-            or len(roi_upper_left_vertex) != 2 \
-            or not isinstance(roi_upper_left_vertex[0], int) or not isinstance(roi_upper_left_vertex[1], int):
-        _logger.debug("Wrong ROI upper left vertex")
-        raise ValueError("Wrong ROI upper left vertex. Must be a 2-dimensional tuple of ints.")
-    if roi_width is None or not isinstance(roi_width, int):
-        _logger.debug("Wrong ROI width")
-        raise ValueError("Wrong ROI width. Must be an int")
-    if roi_height is None or not isinstance(roi_height, int):
-        _logger.debug("Wrong ROI height")
-        raise ValueError("Wrong ROI height. Must be an int")
+    if roi is None or not isinstance(roi, tuple) or len(roi) != 4 or not all(isinstance(vertex, int) for vertex in roi):
+        _logger.debug("Wrong ROI definition. Must be a 4-Dimensional tuple of ints")
+        raise ValueError("Invalid ROI definition. Must be a 4-Dimensional tuple of ints")
 
-    roi_row_between_limits = 0 <= roi_upper_left_vertex[0] and roi_upper_left_vertex[0] + roi_height < video_height
-    roi_column_between_limits = 0 <= roi_upper_left_vertex[1] and roi_upper_left_vertex[1] + roi_width < video_width
-    if not roi_row_between_limits or not roi_column_between_limits:
+    if roi[0] < 0 or roi[1] >= video_height or roi[2] < 0 or roi[3] >= video_width:
         _logger.debug("The ROI is out of range")
         raise ValueError("Wrong ROI. Is out of range")
 
-    roi_frames = map(lambda frame: _get_roi(frame, roi_upper_left_vertex, roi_height, roi_width), frames)
+    roi_frames = map(lambda frame: _get_roi(frame, roi), frames)
     raw_signal = map(lambda roi_frame: np.mean(roi_frame), roi_frames)  # Calculate the mean of the ROI
     raw_signal_mean = np.mean(raw_signal)  # Calculate the mean of the signal to be substracted to it
 
     return np.array(map(lambda point: point - raw_signal_mean, raw_signal))  # Creates the final signal to be processed
 
 
-def _get_roi(frame, upper_left_vertex, height, width):
+def _get_roi(frame, roi):
     """ Extracts the ROI from the given frame.
     Note: The ROI is rectangular.
     Note: We assume validations were already performed when execution of this method is reached.
 
     Params:
         frame (array): A 2-dimensional numpy array representing a frame.
-        upper_left_vertex (tuple): A tuple of two elements (in which both are integers),
-                                    representing a point in the frame to be considered as the upper left vertex of the
-                                    rectangular ROI.
-                                    Note: The orientation is (row, column).
-        height (int): The height of the ROI
-        width (int): The width of the ROI.
+        roi (tuple): A 4-dimensional tuple holding each of the vertexes of a rectangular ROI.
+                     Note: The first two elements define the height, and the second two, the width.
+                     This means that roi[0] is the upper left corner, roi[1] is the lower left corner,
+                     roi[2] is the upper right corner, and roi[3] is the lower right corner.
     Returns:
         array: A new frame, representing the ROI of the given frame.
     """
-    roi_row_start = upper_left_vertex[0]
-    roi_column_start = upper_left_vertex[1]
-    return frame[roi_row_start:roi_row_start + height, roi_column_start:roi_column_start + width]
+    return frame[roi[0]:roi[1], roi[2]:roi[3]]
 
 
 def _process_signal(signal):
