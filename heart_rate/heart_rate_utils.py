@@ -156,7 +156,7 @@ def _process_signal(signal):
         raise ValueError("The signal must not be null and must be a numpy array")
 
     _logger.info("Processing signal...")
-    return np.abs(fft.fftshift(fft.fft(signal))) ** 2  # Calculate spectral density
+    return np.abs(fft.fftshift(fft.fft(signal))) ** 2
 
 
 def _filter_signal(signal, filters=None):
