@@ -40,6 +40,7 @@ class Video:
             _logger.debug("Could not open video")
             raise IOError("Could not open '{}' file".format(path_to_video))
 
+        _logger.info("Creating video instance... This might take a while")
         _logger.debug("Reading video properties...")
         self._length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
         self._width = int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH))
