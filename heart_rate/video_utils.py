@@ -48,15 +48,15 @@ class Video:
         _logger.debug("Video properties read successfully")
 
         _logger.debug("Reading video frames...")
-        self._r = []
-        self._g = []
         self._b = []
+        self._g = []
+        self._r = []
         while video_capture.isOpened():
             ret, frame = video_capture.read()
             if ret:
-                self._r += [frame[:, :, 0]]
+                self._b += [frame[:, :, 0]]
                 self._g += [frame[:, :, 1]]
-                self._b += [frame[:, :, 2]]
+                self._r += [frame[:, :, 2]]
             else:
                 break
         _logger.debug("Video frames read successfully")
@@ -101,12 +101,12 @@ class Video:
         return self._fps
 
     @property
-    def r(self):
+    def b(self):
         """
         Returns:
-            The 'R' video frames.
+            The 'B' video frames.
         """
-        return self._r
+        return self._b
 
     @property
     def g(self):
@@ -117,9 +117,9 @@ class Video:
         return self._g
 
     @property
-    def b(self):
+    def r(self):
         """
         Returns:
-            The 'B' video frames.
+            The 'R' video frames.
         """
-        return self._b
+        return self._r
