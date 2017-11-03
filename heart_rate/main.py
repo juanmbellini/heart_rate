@@ -3,6 +3,8 @@ import argparse
 import logging
 import sys
 
+import heart_rate_utils
+import video_utils
 from heart_rate import __version__
 
 _logger = logging.getLogger(__name__)
@@ -39,6 +41,87 @@ def parse_args(args):
         action='store_const',
         const=logging.DEBUG)
 
+    # Video Arguments
+    parser.add_argument(
+        '-vp',
+        '--video-path',
+        dest="video_path",
+        help="Set that path to the video to analyze.",
+        action='store',
+        type=str)
+
+    # Heart Beat measure arguments
+    parser.add_argument(
+        '-rUL',
+        '--roi-upper-left',
+        dest="roi_upper_left",
+        help="Set upper left corner of the rectangular ROI.",
+        action='store',
+        type=int)
+    parser.add_argument(
+        '-rLL',
+        '--roi-lower-left',
+        dest="roi_lower_left",
+        help="Set lower left corner of the rectangular ROI.",
+        action='store',
+        type=int)
+    parser.add_argument(
+        '-rUR',
+        '--roi-upper-right',
+        dest="roi_upper_right",
+        help="Set upper right corner of the rectangular ROI.",
+        action='store',
+        type=int)
+    parser.add_argument(
+        '-rLR',
+        '--roi-lower-right',
+        dest="roi_lower_right",
+        help="Set lower right corner of the rectangular ROI.",
+        action='store',
+        type=int)
+    parser.add_argument(
+        '-mF',
+        '--min-freq',
+        dest="min_freq",
+        help="Set the minimum frequency for the bandpass filter.",
+        action='store',
+        type=float)
+    parser.add_argument(
+        '-MF',
+        '--max-freq',
+        dest="max_freq",
+        help="Set the maximum frequency for the bandpass filter.",
+        action='store',
+        type=float)
+    parser.add_argument(
+        '-R',
+        '--red',
+        dest="channel",
+        help="Set the channel to be processed to RED.",
+        action='store_const',
+        const="R")
+    parser.add_argument(
+        '-G',
+        '--green',
+        dest="channel",
+        help="Set the channel to be processed to GREEN.",
+        action='store_const',
+        const="G")
+    parser.add_argument(
+        '-B',
+        '--blue',
+        dest="channel",
+        help="Set the channel to be processed to BLUE.",
+        action='store_const',
+        const="R")
+
+    # Set default values
+    parser.set_defaults(log_level=logging.WARN)
+    parser.set_defaults(video_path="./video")
+    parser.set_defaults(min_freq=0.4)
+    parser.set_defaults(max_freq=7.0)
+    parser.set_defaults(channel="G")
+
     return parser.parse_args(args)
 
 
@@ -46,7 +129,7 @@ def setup_logging(log_level):
     """Setup basic logging
 
     Args:
-      log_level (int): minimum loglevel for emitting messages
+      log_level (int): minimum log level for emitting messages
     """
     logging.basicConfig(level=log_level,
                         stream=sys.stdout,
@@ -63,6 +146,24 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.log_level)
     _logger.info("Starting application...")
+
+    try:
+        video = video_utils.Video(args.video_path)
+    except Exception as e:
+        _logger.error("Could not create video instance. Error message is: \"{}\"".format(e.message))
+        exit(1)
+
+    roi = (args.roi_upper_left, args.roi_lower_left, args.roi_upper_right, args.roi_lower_right)
+    min_freq = args.min_freq
+    max_freq = args.max_freq
+    channel = args.channel
+    try:
+        # noinspection PyUnboundLocalVariable
+        result = heart_rate_utils.measure(video, roi, min_freq, max_freq, channel)
+        print("Average heart beat rate is {}".format(result))
+    except Exception as e:
+        _logger.error("Could not measure heart beat rate. Exception message was {}".format(e.message))
+        exit(1)
 
 
 def run():
