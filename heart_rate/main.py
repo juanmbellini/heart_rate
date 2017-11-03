@@ -55,28 +55,28 @@ def parse_args(args):
         '-rUL',
         '--roi-upper-limit',
         dest="roi_upper_limit",
-        help="Set upper left corner of the rectangular ROI.",
+        help="Set upper limit of the rectangular ROI.",
         action='store',
         type=int)
     parser.add_argument(
         '-rLL',
         '--roi-lower-limit',
         dest="roi_lower_limit",
-        help="Set lower left corner of the rectangular ROI.",
+        help="Set lower limit of the rectangular ROI.",
         action='store',
         type=int)
     parser.add_argument(
         '-rlL',
         '--roi-left-limit',
         dest="roi_left_limit",
-        help="Set upper right corner of the rectangular ROI.",
+        help="Set left limit of the rectangular ROI.",
         action='store',
         type=int)
     parser.add_argument(
         '-rrL',
         '--roi-right-limit',
         dest="roi_right_limit",
-        help="Set lower right corner of the rectangular ROI.",
+        help="Set right limit of the rectangular ROI.",
         action='store',
         type=int)
     parser.add_argument(
