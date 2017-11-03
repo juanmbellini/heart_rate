@@ -16,10 +16,10 @@ def fft(x):
     Returns:
         array: The computed FFT of the given series.
     """
-    # As we know its going to have a complex part, we need to specifically set the type to admit complex
     if x is None or not isinstance(x, np.ndarray):
         _logger.debug("The given series is null or is not a numpy array")
         raise ValueError("The series must be a non null numpy array")
+    # As we know its going to have a complex part, we need to specifically set the type to admit complex
     x = np.asarray(x, dtype=np.complex)
     n = len(x)
     if n <= 1:
