@@ -53,29 +53,29 @@ def parse_args(args):
     # Heart Beat measure arguments
     parser.add_argument(
         '-rUL',
-        '--roi-upper-left',
-        dest="roi_upper_left",
+        '--roi-upper-limit',
+        dest="roi_upper_limit",
         help="Set upper left corner of the rectangular ROI.",
         action='store',
         type=int)
     parser.add_argument(
         '-rLL',
-        '--roi-lower-left',
-        dest="roi_lower_left",
+        '--roi-lower-limit',
+        dest="roi_lower_limit",
         help="Set lower left corner of the rectangular ROI.",
         action='store',
         type=int)
     parser.add_argument(
-        '-rUR',
-        '--roi-upper-right',
-        dest="roi_upper_right",
+        '-rlL',
+        '--roi-left-limit',
+        dest="roi_left_limit",
         help="Set upper right corner of the rectangular ROI.",
         action='store',
         type=int)
     parser.add_argument(
-        '-rLR',
-        '--roi-lower-right',
-        dest="roi_lower_right",
+        '-rrL',
+        '--roi-right-limit',
+        dest="roi_right_limit",
         help="Set lower right corner of the rectangular ROI.",
         action='store',
         type=int)
@@ -153,7 +153,7 @@ def main(args):
         _logger.error("Could not create video instance. Error message is: \"{}\"".format(e.message))
         exit(1)
 
-    roi = (args.roi_upper_left, args.roi_lower_left, args.roi_upper_right, args.roi_lower_right)
+    roi = (args.roi_upper_limit, args.roi_lower_limit, args.roi_left_limit, args.roi_right_limit)
     min_freq = args.min_freq
     max_freq = args.max_freq
     channel = args.channel

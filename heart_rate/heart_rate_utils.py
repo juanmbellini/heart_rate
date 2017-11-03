@@ -22,8 +22,8 @@ def measure(video, roi, min_freq, max_freq, channel='G'):
         video (Video): The video to analyze.
         roi (tuple): A 4-dimensional tuple holding each of the vertexes of a rectangular ROI.
                      Note: The first two elements define the height, and the second two, the width.
-                     This means that roi[0] is the upper left corner, roi[1] is the lower left corner,
-                     roi[2] is the upper right corner, and roi[3] is the lower right corner.
+                     This means that roi[0] is the upper limit, roi[1] is the lower limit,
+                     roi[2] is the left limit, and roi[3] is the right limit.
         upper_left_vertex (tuple): A tuple of two elements (in which both are integers),
                                     representing a point in the frame to be considered as the upper left vertex of the
                                     rectangular ROI.
@@ -96,8 +96,8 @@ def _create_signal(frames, roi, video_height, video_width):
         frames (list): The list of frames from where the signal will be created. We assume all frames has same shape.
         roi (tuple): A 4-dimensional tuple holding each of the vertexes of a rectangular ROI.
                      Note: The first two elements define the height, and the second two, the width.
-                     This means that roi[0] is the upper left corner, roi[1] is the lower left corner,
-                     roi[2] is the upper right corner, and roi[3] is the lower right corner.
+                     This means that roi[0] is the upper limit, roi[1] is the lower limit,
+                     roi[2] is the left limit, and roi[3] is the right limit.
         video_height (int): The video height
         video_width (int): The video width
     Returns:
@@ -135,8 +135,8 @@ def _get_roi(frame, roi):
         frame (array): A 2-dimensional numpy array representing a frame.
         roi (tuple): A 4-dimensional tuple holding each of the vertexes of a rectangular ROI.
                      Note: The first two elements define the height, and the second two, the width.
-                     This means that roi[0] is the upper left corner, roi[1] is the lower left corner,
-                     roi[2] is the upper right corner, and roi[3] is the lower right corner.
+                     This means that roi[0] is the upper limit, roi[1] is the lower limit,
+                     roi[2] is the left limit, and roi[3] is the right limit.
     Returns:
         array: A new frame, representing the ROI of the given frame.
     """
