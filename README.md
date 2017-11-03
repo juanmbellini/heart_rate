@@ -76,6 +76,113 @@ These instructions will install the development environment into your local mach
 The application can be run executing the ``heart_rate`` command. 
 The following sections will explain the different options and arguments that can be used.
 
+### Displaying usage message
+You can display the usage message using the ```-h``` or ```--help``` arguments. For example:
+```
+$ heart_rate --help
+```
+
+### Displaying version number
+You can check the version of the module using the ```-V``` or ```--version``` arguments. For example:
+```
+$ heart_rate -V
+```
+
+### Logging verbosity
+
+#### Logging levels
+There are three levels of logging verbosity: 
+* **Normal**
+* **Verbose** 
+* **Very Verbose**.
+
+Normal verbosity logging will log **WARNING**, **ERROR** and **CRITICAL** messages.
+Verbose logging will log what Normal logging logs, and **INFO** messages.
+Very Verbose logging is the same as Verbose logging, adding **DEBUG** messages.
+
+#### Selecting a logging level
+##### Normal Verbosity Logging
+To use **Normal** verbosity logging just execute the command. **Normal** verbosity logging is the default
+##### Verbose Logging
+To use **Verbose** logging, add the ```-v``` or ```--verbose``` arguments. For example:
+```
+$ heart_rate --verbose
+```
+##### Very Verbose Logging
+To use **Very Verbose** logging, add the ```-vv``` or ```--very-verbose``` arguments. For example:
+```
+$ heart_rate -vv
+```
+
+### Setting video path
+To set the video's path to analize, use the ```-vp``` or ```--video_path``` arguments. For example:
+```
+$ heart_rate -vp ~/video.mp4
+```
+The default value is the directory ```./video```.
+
+### Setting region of interest (ROI)
+
+The rectangular region of interest consist of four corners. Each one specified by a parameter. This parameters are required and
+must be consistent, else the program will no work\
+To set the upper left corner, use the ```-rUL``` or ```--roi-upper-left``` argument. For example:
+```
+$ heart_rate -rUL 200
+```
+
+To set the lower left corner, use the ```-rLL``` or ```--roi-lower-left``` argument. For example:
+```
+$ heart_rate -rLL 250
+```
+
+To set the upper right corner, use the ```-rUR``` or ```--roi-upper-right``` argument. For example:
+```
+$ heart_rate -rUR 100
+```
+
+To set the lower right corner, use the ```-rLR``` or ```--roi-lower-right``` argument. For example:
+```
+$ heart_rate -rLR 150
+```
+
+###Setting bandpass frequencies
+To set the bandpass maximum frequency, use the ```-MF``` or ```--max-freq``` arguments. For example:
+```
+$ heart_rate --MF 7.0
+```
+The default value is ``7.0``.
+
+To set the bandpass minimum frequency, use the ```-mF``` or ```--min-freq``` arguments. For example:
+```
+$ heart_rate --mF 0.4
+```
+The default value is ``0.4``.
+
+
+###Setting the channel to process
+To set BLUE channel, use the ```-B``` or ```--blue``` arguments. For example:
+```
+$ heart_rate -B
+```
+
+To set RED channel, use the ```-R``` or ```--red``` arguments. For example:
+```
+$ heart_rate -R
+```
+
+To set GREEN channel, use the ```-G``` or ```--green``` arguments. For example:
+```
+$ heart_rate -G
+```
+
+The default channel is GREEN.
+
+###Example
+Here is a full example usign all arguments:
+```
+$ heart_rate -rUL 600 -rLL 630 -rlL 300 -rrL 360  -mF 2.2 -MF 4.0 -G -vp videos/1_seg_120ppm.MOV
+```
+
 ## Authors
 * [Juan Marcos Bellini](https://github.com/juanmbellini)
 * [Tomás de Lucca](https://github.com/tomidelucca)
