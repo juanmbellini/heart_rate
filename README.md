@@ -122,7 +122,6 @@ $ heart_rate -vp ~/video.mp4
 The default value is the directory ```./video```.
 
 ### Setting region of interest (ROI)
-
 The rectangular region of interest consist of four corners. Each one specified by a parameter. This parameters are required and
 must be consistent, else the program will no work\
 To set the upper left corner, use the ```-rUL``` or ```--roi-upper-left``` argument. For example:
@@ -145,7 +144,7 @@ To set the lower right corner, use the ```-rLR``` or ```--roi-lower-right``` arg
 $ heart_rate -rLR 150
 ```
 
-###Setting bandpass frequencies
+### Setting bandpass frequencies
 To set the bandpass maximum frequency, use the ```-MF``` or ```--max-freq``` arguments. For example:
 ```
 $ heart_rate --MF 7.0
@@ -159,7 +158,7 @@ $ heart_rate --mF 0.4
 The default value is ``0.4``.
 
 
-###Setting the channel to process
+### Setting the channel to process
 To set BLUE channel, use the ```-B``` or ```--blue``` arguments. For example:
 ```
 $ heart_rate -B
@@ -177,7 +176,7 @@ $ heart_rate -G
 
 The default channel is GREEN.
 
-###Example
+### Example
 Here is a full example usign all arguments:
 ```
 $ heart_rate -rUL 600 -rLL 630 -rlL 300 -rrL 360  -mF 2.2 -MF 4.0 -G -vp videos/1_seg_120ppm.MOV
