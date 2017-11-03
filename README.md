@@ -122,26 +122,26 @@ $ heart_rate -vp ~/video.mp4
 The default value is the directory ```./video```.
 
 ### Setting region of interest (ROI)
-The rectangular region of interest consist of four corners. Each one specified by a parameter. This parameters are required and
+The rectangular region of interest consist of four limits. Each one specified by a parameter. This parameters are required and
 must be consistent, else the program will no work\
-To set the upper left corner, use the ```-rUL``` or ```--roi-upper-left``` argument. For example:
+To set the upper limit, use the ```-rUL``` or ```--roi-upper-limit``` argument. For example:
 ```
 $ heart_rate -rUL 200
 ```
 
-To set the lower left corner, use the ```-rLL``` or ```--roi-lower-left``` argument. For example:
+To set the lower limit, use the ```-rLL``` or ```--roi-lower-limit``` argument. For example:
 ```
 $ heart_rate -rLL 250
 ```
 
-To set the upper right corner, use the ```-rUR``` or ```--roi-upper-right``` argument. For example:
+To set the right limit, use the ```-rrL``` or ```--roi-right-limit``` argument. For example:
 ```
-$ heart_rate -rUR 100
+$ heart_rate -rrL 100
 ```
 
-To set the lower right corner, use the ```-rLR``` or ```--roi-lower-right``` argument. For example:
+To set the left limit, use the ```-rlL``` or ```--roi-left-limit``` argument. For example:
 ```
-$ heart_rate -rLR 150
+$ heart_rate -rlL 150
 ```
 
 ### Setting bandpass frequencies
